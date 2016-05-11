@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /archives/
+
+Disallow: /vendors/
+Disallow: /js/
+Disallow: /css/
+Disallow: /fonts/
+Disallow: /vendors/
+Disallow: /fancybox/
+
+Sitemap: http://egrcc.github.io/sitemap.xml
+Sitemap: http://egrcc.github.io/baidusitemap.xml
+

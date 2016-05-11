@@ -1,0 +1,893 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="tutorial,node.js,javascript,Markdown," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="egrcc's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="起因很早就接触了 Markdown，也用过几款 Markdown 编辑器。由于我用的是 Linux，一直无法在 Linux 上找到一款美观顺手的编辑器。Mac 上貌似有不少优秀的编辑器，可一直无缘得见。
+其实很早就有了自己实现一个 Markdown 编辑器的想法，可一直觉得像编辑器这样的东西做起来应该不会太简单，工作量应该会非常大。我也一直没有弄明白这其中的原理是什么，虽然网上有不少开源的 Ma">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个 Markdown 编辑器的实现">
+<meta property="og:url" content="http://egrcc.github.io/2015/04/12/mango-tutorial/index.html">
+<meta property="og:site_name" content="egrcc's blog">
+<meta property="og:description" content="起因很早就接触了 Markdown，也用过几款 Markdown 编辑器。由于我用的是 Linux，一直无法在 Linux 上找到一款美观顺手的编辑器。Mac 上貌似有不少优秀的编辑器，可一直无缘得见。
+其实很早就有了自己实现一个 Markdown 编辑器的想法，可一直觉得像编辑器这样的东西做起来应该不会太简单，工作量应该会非常大。我也一直没有弄明白这其中的原理是什么，虽然网上有不少开源的 Ma">
+<meta property="og:image" content="http://7u2qj9.com1.z0.glb.clouddn.com/Mango1_256.png">
+<meta property="og:image" content="http://7u2qj9.com1.z0.glb.clouddn.com/readme_math.png">
+<meta property="og:updated_time" content="2015-04-12T13:18:44.111Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一个 Markdown 编辑器的实现">
+<meta name="twitter:description" content="起因很早就接触了 Markdown，也用过几款 Markdown 编辑器。由于我用的是 Linux，一直无法在 Linux 上找到一款美观顺手的编辑器。Mac 上貌似有不少优秀的编辑器，可一直无缘得见。
+其实很早就有了自己实现一个 Markdown 编辑器的想法，可一直觉得像编辑器这样的东西做起来应该不会太简单，工作量应该会非常大。我也一直没有弄明白这其中的原理是什么，虽然网上有不少开源的 Ma">
+<meta name="twitter:image" content="http://7u2qj9.com1.z0.glb.clouddn.com/Mango1_256.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 10642862,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> 一个 Markdown 编辑器的实现 | egrcc's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">egrcc's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Wir müssen wissen. Wir werden wissen.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-resources">
+          <a href="/resources" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-folder"></i> <br />
+            
+            资源
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                一个 Markdown 编辑器的实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-04-12T20:24:31+08:00" content="2015-04-12">
+              2015-04-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/计算机/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/04/12/mango-tutorial/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/12/mango-tutorial/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2015/04/12/mango-tutorial/" class="leancloud_visitors" data-flag-title="一个 Markdown 编辑器的实现">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://7u2qj9.com1.z0.glb.clouddn.com/Mango1_256.png" alt="Mango logo"></p>
+<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>很早就接触了 Markdown，也用过几款 Markdown 编辑器。由于我用的是 Linux，一直无法在 Linux 上找到一款美观顺手的编辑器。Mac 上貌似有不少优秀的编辑器，可一直无缘得见。</p>
+<p>其实很早就有了自己实现一个 Markdown 编辑器的想法，可一直觉得像编辑器这样的东西做起来应该不会太简单，工作量应该会非常大。我也一直没有弄明白这其中的原理是什么，虽然网上有不少开源的 Markdown 编辑器，但在没有说明的情况下阅读别人的代码是一件十分困难的事情，所以也一直没有去读。</p>
+<p>直到最近读到了一片文章：<a href="http://duco.cc/node-webkit-tutorial-creating-a-markdown-editor.html" target="_blank" rel="external">Node Webkit (NW.js) tutorial: creating a Markdown editor</a>。在这篇文章里作者简述了一个极其简单的 Markdown 编辑器的实现，作者用到的技术虽然我不太熟悉，不过原理我还是看懂了。就在这篇文章的基础上，我开始实现自己的 Markdown 编辑器： <strong>Mango</strong>，已经在 <a href="https://github.com/egrcc/Mango" target="_blank" rel="external">github</a> 上开源。</p>
+<a id="more"></a>
+<p>我给自己的编辑器取名为 Mango —- 一种水果的名字，logo 为蓝底白字的一个 <strong>M</strong> （见上图），<strong>M</strong> 既代表 Markdown 也代表 Mango，字体是在 PhotoShop 里随便选了一种看得过去的字体。logo 的设计模仿了另一个 Markdown 编辑器（<a href="http://remarkableapp.net/" target="_blank" rel="external">Remarkable</a>）的设计。有了 logo 之后就可以开始动工了。</p>
+<p>一开始我本来打算用 gtk+ 来写，不过我对 C 语言的一些第三方库了解得不多，不知道能否方便地实现我想要的功能，比如代码高亮，LaTeX 支持，而 JavaScript 在这方面有非常成熟的库。而我又是一个对新技术非常感兴趣的人，所以想尝试一下用我没有接触过的一些技术来实现。于是选择了跟上文作者相同的技术：NW.js 来实现。</p>
+<p>NW.js 又叫 node-webkit，把 Node.js 跟 Chromium 结合在了一起，使得可以用 web 的技术来写桌面 App，不仅可以使用 html、css、js，还可以使用 Node 大量的第三方库，而且轻松跨平台，实在是一种相当酷的技术，更多的介绍请参见<a href="https://github.com/nwjs/nw.js" target="_blank" rel="external">项目主页</a>。不过我之前并没有学过 Node.js，我的前端技术（html、css、js）也只是属于在 W3Schools 上速成的水平。所以在头三天花了一些时间学习 Node，以及恶补了一些 JavaScript 的知识。</p>
+<h2 id="开始实现"><a href="#开始实现" class="headerlink" title="开始实现"></a>开始实现</h2><p>说实话，“会写一个” 跟 “写了一个” 的区别真的相当大，虽然原理都弄明白了，可真正做起来还是有相当大的困难。这也是我写这篇文章的原因，希望给后续想自己实现一个编辑器的人一些帮助。</p>
+<p>其实我需要的功能不多，一个美观的 UI，代码高亮，LaTeX支持（我是数学系的，这个是必须的），实时预览和同步滚动，以及方便的导入导出功能，尤其是在导出 HTML 和 PDF 后仍能保持美观的 UI。在很多方面马克飞象都做得很好，而且功能比我要求的多，但却无法读写本地文件，同步功能也不是免费的。而NW.js 可以通过 Node 的模块轻松实现读写文件的功能。</p>
+<p>什么是 Markdown 呢？Markdown只是一种标记语言(Markup language)，不过比 HTML 简单直观，非常适合写作和记笔记。浏览器并不能直接解析 Markdown，而是所以我们首先需要通过 Markdown 解析器（parser）把 Markdown 的语法解析成 HTML 语法，再由浏览器的引擎渲染成我们所见的页面。原理就是这么简单。parser 并不需要我们自己写，已经有很多 Markdown 的实现了，这里我选了 Marked。所以我们只需要在左边放一个 Editor，编辑 Markdown 源码，然后实时把 Editor 里面的 Markdown 通过 Marked 转换成 HTML 放在右边的 Viewer 里就可以了。要实现实时预览，必须监听 Editor 里的变化，每次有所改变的时候，重新用 Marked 解析一次（放在<code>reload()</code>函数里）。</p>
+<h3 id="同步滚动实现"><a href="#同步滚动实现" class="headerlink" title="同步滚动实现"></a>同步滚动实现</h3><p>同步滚动功能实际上非常简单，只要监听 Editor 和 Viewer 的滚动事件，每次一个滚动的时候改变另一个的滚动轴，使得它们的百分比一样。就是下面的代码（我也是 google 来的）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> $divs = $(<span class="string">'textarea#editor, div#preview'</span>);</span><br><span class="line"><span class="keyword">var</span> sync = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">   <span class="keyword">var</span> $other = $divs.not(<span class="keyword">this</span>).off(<span class="string">'scroll'</span>), other = $other.get(<span class="number">0</span>);</span><br><span class="line">   <span class="keyword">var</span> percentage = <span class="keyword">this</span>.scrollTop / (<span class="keyword">this</span>.scrollHeight - <span class="keyword">this</span>.offsetHeight);</span><br><span class="line">   other.scrollTop = percentage * (other.scrollHeight - other.offsetHeight);</span><br><span class="line">   setTimeout( <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; $other.on(<span class="string">'scroll'</span>, sync ); &#125;,<span class="number">200</span>);</span><br><span class="line">&#125;</span><br><span class="line">$divs.on(<span class="string">'scroll'</span>, sync);</span><br></pre></td></tr></table></figure>
+<h3 id="代码高亮实现"><a href="#代码高亮实现" class="headerlink" title="代码高亮实现"></a>代码高亮实现</h3><p>代码高亮我选择了 highlight.js,只要把 highlight.js 的代码嵌入 html，然后在每次更新页面的时候，重新初始化一下，就是在<code>reload()</code>函数里嵌入如下两行代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hljs.initHighlighting.called = <span class="literal">false</span>;</span><br><span class="line">hljs.initHighlighting();</span><br></pre></td></tr></table></figure></p>
+<h3 id="LaTex支持"><a href="#LaTex支持" class="headerlink" title="LaTex支持"></a>LaTex支持</h3><p>这个是最难实现的，也是我花时间最多的。所以我会详细讲一讲具体的做法。首先 MathJax 库肯定是首选,渲染出来的数学公式非常漂亮，可以见下图:</p>
+<p><img src="http://7u2qj9.com1.z0.glb.clouddn.com/readme_math.png" alt=""></p>
+<p>要想实现数学公式的实时渲染，就必须在<code>reload()</code>函数里调用 MathJax 的<code>Typeset</code>方法重新渲染一遍整个数学公式，而渲染需要有一定的时间，这就造成了在每次输入的时候有数学公式的地方都会不断的跳（不知如何形容，就是你首先会看到源码，然后看到数学公式），这真的是一个非常影响用户体验的问题。国内一些在线编辑器做得非常好，没有这个问题，不过国外的 stackedit 仍然有这个问题，只要输入速度快一点，数学公式会不断变大变小。</p>
+<p>解决这个问题的一个方法是：首先把经由 Marked 解析出来的 html 源码放入一个 buffer 里，而这个 buffer 是不显示的。然后由 MathJax 把 buffer 里的 html 中的数学公式排版成可见的格式，然后再把 buffer 里的 html 送到 Viewer 显示出来，这样 Viewer 得到的 html 就总是经过 MathJax 排版过的。这里有一个问题，就是<code>Typeset</code>函数是异步的，我们必须要在<code>Typeset</code>函数完成后，再把 buffer 里的 html 送到 Viewer，这里要借助一下 MathJax 提供的<code>Queue</code>。部分代码如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//reload函数部分片段</span></span><br><span class="line"><span class="keyword">var</span> resultDiv = global.$(<span class="string">'.md_result'</span>);</span><br><span class="line"><span class="keyword">var</span> buffer = global.window.document.getElementById(<span class="string">"buffer"</span>);</span><br><span class="line"><span class="keyword">var</span> textEditor = global.$(<span class="string">'#editor'</span>);</span><br><span class="line"><span class="keyword">var</span> text = textEditor.val();</span><br><span class="line"></span><br><span class="line">buffer.innerHTML = (marked(text));</span><br><span class="line">MathJax.Hub.Queue([<span class="string">"Typeset"</span>,MathJax.Hub,buffer],</span><br><span class="line">      				  [<span class="string">"preview"</span>,<span class="keyword">this</span>]);</span><br><span class="line"><span class="comment">//preview函数里面实现了把buffer里的html送到Viewer：resultDiv.html(buffer.innerHTML);</span></span><br></pre></td></tr></table></figure></p>
+<p>看起来非常完美，可我经过测试之后发现问题任然存在。原因是因为我们不断编辑导致<code>reload</code>函数频繁触发，可能第二个<code>reload</code>函数运行到<code>buffer.innerHTML = (marked(text))</code>这一步的时候，前一个<code>preview</code>函数刚好运行<code>resultDiv.html(buffer.innerHTML)</code>，而此时的<code>buffer.innerHTML</code>是未经<code>Typeset</code>函数处理的 。所以我想了个加锁（lock）的办法，就是在前一个<code>preview</code>函数没有运行完的时候，后来的<code>reload</code>函数不能运行<code>buffer.innerHTML = (marked(text))</code>这段代码。代码如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reload</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (lock == <span class="literal">false</span>) &#123;</span><br><span class="line">		buffer.innerHTML = (marked(text));</span><br><span class="line">		MathJax.Hub.Queue([<span class="string">"Typeset"</span>,MathJax.Hub,buffer],</span><br><span class="line">      				  [<span class="string">"preview"</span>,<span class="keyword">this</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">preview</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (lock == <span class="literal">false</span>)&#123;</span><br><span class="line">		lock = <span class="literal">true</span>;</span><br><span class="line">		resultDiv.html(buffer.innerHTML);</span><br><span class="line">		lock = <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当然加锁之后实时更新可能会有一次延迟，不过这个问题不大。</p>
+<p>这里还有一个问题，就是 LaTeX 的语法跟 Markdown 的语法有部分冲突，主要是双下划线<code>_..._</code>与<code>\</code>，LaTeX 里使用<code>_</code>表示下标，当有两个下标的时候，会先被 Marked 解析为斜体，然后 LaTeX 就无法渲染了。<code>\\</code>会被 Marked 转义成<code>\</code>，这样 LaTeX 里就无法使用<code>\\</code>了，必须使用<code>\\\</code>。要解决这个问题必须修改 parser，要不然就重新实现 parser 使得 parser 不解析<code>$$...$$</code>和<code>$...$</code>中的内容。这里参考了<a href="http://www.fuzihao.org/blog/2014/03/17/%E8%AE%A9marked%E4%B8%8Emathjax%E5%92%8C%E8%B0%90%E5%85%B1%E5%AD%98/" target="_blank" rel="external">让marked与MathJax和谐共存</a>这篇文章的解决办法，修改了 Marked 的部分源码，不过就无法在 Mango 中使用<code>_..._</code>来表示斜体了，可以使用<code>*...*</code>。</p>
+<h3 id="导出功能实现"><a href="#导出功能实现" class="headerlink" title="导出功能实现"></a>导出功能实现</h3><p>一个合格的 Markdown 必然要有导出 HTML 和 PDF 的功能。导出 HTML 的功能比较容易实现，因为整个界面本身就是 HTML，只要把不该出现的东西（比如工具栏，编辑区）在导出的时候隐藏掉就可以了。而 PDF 的功能有些困难。这里我不得不吐槽一下 npm。npm 虽然非常好用，库也非常庞大，随手一搜发现很多库都可以实现此功能，但是这些库的质量参差不齐，有些文档都写不清楚，上手相当有困难。我也是试了几种不同的库才终于找到一个有用的：<a href="https://github.com/bauhausjs/phantom-html2pdf" target="_blank" rel="external">phantom-html2pdf</a>。不过这个库也好不到哪里去，文档不太清楚，作者貌似也不太管事，别人在 github 上提了几个 issue 都没有得到回应。我也提了一个，是关于使用多个<code>css</code>的问题，作者理都不理我。。。具体的实现请参见<code>exportToHTML</code>和<code>exportToPDF</code>这两个函数，比较简单，就不细说了。</p>
+<h3 id="美观的-UI"><a href="#美观的-UI" class="headerlink" title="美观的 UI"></a>美观的 UI</h3><p>对于一个优秀的软件来说，一个好的 UI 必然会为其增色不少。Markdown 解析器只是把 Markdown 转为 HTML，而没有规定格式，所以不同的编辑器转化出来的格式并不是一样的，简书有简书的 UI，Medium 有 Medium 的 UI，马克飞象有马克飞象的 UI。我个人非常喜欢马克飞象和作业部落的字体颜色，所以在 Mango 中选了跟它们一样的字体颜色。我的<code>css</code>水平真的非常差，不过幸好 bootstrap 提供了不错的格式，再此基础上修改一些就可以了。其中<code>blockquote</code>的格式是 google 来的（在一个专门讲 css 技巧的网站）。具体的<code>css</code>代码可以见<code>preview.css</code>.为了在导出的时候仍然有美观的 UI，<code>css</code>都是直接在 html 里面写的，并没有外链。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><h3 id="NW-js-的优点和缺点"><a href="#NW-js-的优点和缺点" class="headerlink" title="NW.js 的优点和缺点"></a>NW.js 的优点和缺点</h3><p>说实话 NW.js 非常好用，及其方便容易就可以创建一个桌面App，Node 大量的第三方包让你几乎可以找到任何你想要的功能，可是必须要在 NW.js 环境才能运行，可是 NW 可执行文件有70多MB！！！即使你的程序很小，打包在一起也会十分庞大。如果你的程序也非常大，那就更麻烦了。比如在 Mango 中为了有 PDF 导出功能，需要<code>phantomjs</code>，可这个包有30多MB，这就使得程序非常大了。</p>
+<p>另外，报错信息太不详细了，经常解决一个 bug 花很长时间，总是报一些百思不得其解的错（不知道到这是 NW.js 的原因还是 JavaScript 的原因）。</p>
+<h3 id="Mango-的未来"><a href="#Mango-的未来" class="headerlink" title="Mango 的未来"></a>Mango 的未来</h3><p>其实 Mango 还很不完善，比如连查找替换的功能都没有，也没有其他编辑器的流程图功能。因为 Mango 的定位是用来记笔记和写一些小文章（我想这也是所有 Markdown 编辑器的定位），又不是写代码，所以我想查找替换的功能很少会用到。而流程图，语法太繁琐，违背了简约的原则，而且估计也很少会用，所以也没有实现了。其实还是有一些功能我想做的，比如与一些云服务相结合，实时同步到云端（就像马克飞象那样，当然也不一定跟印象笔记结合）。另一个是实现一些自定义的功能，比如自定义<code>css</code>等。如果 Mango 有用户使用的话，我将继续完善。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tutorial/" rel="tag">#tutorial</a>
+          
+            <a href="/tags/node-js/" rel="tag">#node.js</a>
+          
+            <a href="/tags/javascript/" rel="tag">#javascript</a>
+          
+            <a href="/tags/Markdown/" rel="tag">#Markdown</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/05/31/linux-software/" rel="next" title="Linux平台常用软件总结（Ubuntu版）">
+                <i class="fa fa-chevron-left"></i> Linux平台常用软件总结（Ubuntu版）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/07/18/Machine-Learning-1-Linear-Regression/" rel="prev" title="Machine Learning 笔记(1) -- Linear Regression">
+                Machine Learning 笔记(1) -- Linear Regression <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2015/04/12/mango-tutorial/"
+     data-title="一个 Markdown 编辑器的实现"
+     data-content=""
+     data-url="http://egrcc.github.io/2015/04/12/mango-tutorial/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/04/12/mango-tutorial/"
+           data-title="一个 Markdown 编辑器的实现" data-url="http://egrcc.github.io/2015/04/12/mango-tutorial/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/640px-Tux.png"
+               alt="egrcc" />
+          <p class="site-author-name" itemprop="name">egrcc</p>
+          <p class="site-description motion-element" itemprop="description">Wir müssen wissen. Wir werden wissen.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/egrcc" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/egrcc" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2948739432" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/egrcc" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:zhaolujun1994@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#起因"><span class="nav-number">1.</span> <span class="nav-text">起因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开始实现"><span class="nav-number">2.</span> <span class="nav-text">开始实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#同步滚动实现"><span class="nav-number">2.1.</span> <span class="nav-text">同步滚动实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码高亮实现"><span class="nav-number">2.2.</span> <span class="nav-text">代码高亮实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LaTex支持"><span class="nav-number">2.3.</span> <span class="nav-text">LaTex支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导出功能实现"><span class="nav-number">2.4.</span> <span class="nav-text">导出功能实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#美观的-UI"><span class="nav-number">2.5.</span> <span class="nav-text">美观的 UI</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NW-js-的优点和缺点"><span class="nav-number">3.1.</span> <span class="nav-text">NW.js 的优点和缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mango-的未来"><span class="nav-number">3.2.</span> <span class="nav-text">Mango 的未来</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">egrcc</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"egrccgithub"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("knWm6cIrhwmokVDtepyBF404-gzGzoHsz", "47Ilfyfw9A4dYkw1aVUzOabv");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

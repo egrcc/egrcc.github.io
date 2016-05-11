@@ -1,0 +1,956 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,RNN,Neural Networks," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="egrcc's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Recurrent Neural NetworkSource: Deep learning (Nature)
+笔记PDF版可以在这里下载。
+1. Basics">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Machine Learning 笔记(9) -- Recurrent Neural Network">
+<meta property="og:url" content="http://egrcc.github.io/2016/02/21/Machine-Learning-9-Recurrent-Neural-Network/index.html">
+<meta property="og:site_name" content="egrcc's blog">
+<meta property="og:description" content="Recurrent Neural NetworkSource: Deep learning (Nature)
+笔记PDF版可以在这里下载。
+1. Basics">
+<meta property="og:image" content="http://egrcc.github.io/img/rnn.jpg">
+<meta property="og:image" content="http://egrcc.github.io/img/bidirectional-rnn.png">
+<meta property="og:image" content="http://egrcc.github.io/img/deep-rnn.png">
+<meta property="og:image" content="http://egrcc.github.io/img/rnn2.png">
+<meta property="og:image" content="http://egrcc.github.io/img/unrollrnn.png">
+<meta property="og:image" content="http://egrcc.github.io/img/rnnlm.png">
+<meta property="og:image" content="http://egrcc.github.io/img/rnn-mt.png">
+<meta property="og:updated_time" content="2016-04-24T13:05:01.882Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Machine Learning 笔记(9) -- Recurrent Neural Network">
+<meta name="twitter:description" content="Recurrent Neural NetworkSource: Deep learning (Nature)
+笔记PDF版可以在这里下载。
+1. Basics">
+<meta name="twitter:image" content="http://egrcc.github.io/img/rnn.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 10642862,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> Machine Learning 笔记(9) -- Recurrent Neural Network | egrcc's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">egrcc's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Wir müssen wissen. Wir werden wissen.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-resources">
+          <a href="/resources" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-folder"></i> <br />
+            
+            资源
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Machine Learning 笔记(9) -- Recurrent Neural Network
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-02-21T01:43:32+08:00" content="2016-02-21">
+              2016-02-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/计算机/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/计算机/Machine-Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine Learning</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/02/21/Machine-Learning-9-Recurrent-Neural-Network/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/02/21/Machine-Learning-9-Recurrent-Neural-Network/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/02/21/Machine-Learning-9-Recurrent-Neural-Network/" class="leancloud_visitors" data-flag-title="Machine Learning 笔记(9) -- Recurrent Neural Network">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Recurrent-Neural-Network"><a href="#Recurrent-Neural-Network" class="headerlink" title="Recurrent Neural Network"></a>Recurrent Neural Network</h2><p></p><p style="text-align:center"><img src="/img/rnn.jpg"><i>Source: Deep learning (Nature)</i></p>
+<p>笔记PDF版可以在<a href="http://egrcc.github.io/docs/Machine-Learning-9-Recurrent-Neural-Network.pdf">这里</a>下载。</p>
+<h3 id="1-Basics"><a href="#1-Basics" class="headerlink" title="1. Basics"></a>1. Basics</h3><a id="more"></a>
+<p><strong>sigmoid function</strong>:</p>
+<p>$$<br>\sigma(x) = \frac{1}{1 + e^{-x}}<br>$$</p>
+<p>$$<br>\sigma^{‘}(x) = \sigma(x)\cdot[1 - \sigma(x)]<br>$$</p>
+<p><strong>hyperbolic function</strong>:</p>
+<p>$$<br>\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}<br>$$</p>
+<p>$$<br>\tanh^{‘}(x) = 1 - \tanh^2(x)<br>$$</p>
+<p><strong>rectified linear unit(ReLU)</strong>:</p>
+<p>$$<br>f(x) = \max(0, x)<br>$$</p>
+<p><strong>softmax function</strong>:</p>
+<p>$$<br>\mathbf{y} = \text{softmax}(\mathbf{x})<br>$$</p>
+<p>$$<br>y_i = \frac{e^{x_i}}{\sum^n_{j = 1}e^{x_j}}<br>$$</p>
+<p>$$<br>\frac{\partial y_i}{\partial x_j} =<br>\begin{cases}<br>-y_i\cdot y_j, &amp; i \ne j\\<br>y_i\cdot (1 - y_i), &amp; i = j<br>\end{cases}<br>$$</p>
+<h3 id="2-Model"><a href="#2-Model" class="headerlink" title="2. Model"></a>2. Model</h3><p><strong>input</strong>:</p>
+<p>$$<br>x = (x_1,x_2,\ldots,x_T) \quad x_t \in \mathbb{R}^n<br>$$</p>
+<p><strong>initialize hidden state</strong>:</p>
+<p>$$<br>s_0 \in \mathbb{R}^k<br>$$</p>
+<p><strong>forward propagation</strong>:</p>
+<p>$$<br>\begin{aligned}<br>&amp;s_t = \tanh(Ux_t + Ws_{t-1})\quad (t = 1,2,\ldots,T)\\<br>&amp;\hat{y}_t = \text{softmax}(Vs_t) \quad (t = 1,2,\ldots,T)<br>\end{aligned}<br>$$</p>
+<p><strong>output</strong>:<br>$$<br>\hat{y} = (\hat{y}_1,\hat{y}_2,\ldots,\hat{y}_T) \quad \hat{y}_t \in \mathbb{R}^m<br>$$</p>
+<h3 id="3-Backpropagation-Through-Time"><a href="#3-Backpropagation-Through-Time" class="headerlink" title="3. Backpropagation Through Time"></a>3. Backpropagation Through Time</h3><p><strong>cost function</strong>:</p>
+<p>$$<br>E(\hat{y}) = \sum_{t=1}^TE_t(\hat{y}_t)<br>$$</p>
+<p><strong>definition</strong>:</p>
+<p>$$<br>\begin{aligned}<br>&amp;h_t = Ux_t + Ws_{t-1} \quad (t = 1,2,\ldots,T)\\<br>&amp;z_t = Vs_t \quad (t = 1,2,\ldots,T)<br>\end{aligned}<br>$$</p>
+<p><strong>gradient for $V$</strong>:</p>
+<p>$$<br>\begin{aligned}<br>\frac{\partial E_t}{\partial V} = \frac{\partial E_t}{\partial \hat{y}_t}\cdot \frac{\partial \hat{y}_t}{\partial V} &amp;= \frac{\partial E_t}{\partial \hat{y}_t}\cdot \frac{\partial \hat{y}_t}{\partial z_t}\cdot \frac{\partial z_t}{\partial V}\\<br>&amp;= \left(\frac{\partial E_t}{\partial \hat{y}_t}\cdot\frac{\partial \hat{y}_t}{\partial z_t}\right)\cdot s_t^{T}\quad (\text{need }\hat{y}_t,s_t; t = 1,2,\ldots,T)<br>\end{aligned}<br>$$</p>
+<p><strong>gradient for $W$</strong>:</p>
+<p>$$<br>\begin{aligned}<br>\frac{\partial s_1}{\partial W} &amp;= \frac{\partial s_1}{\partial h_1}\cdot \frac{\partial h_1}{\partial W}\quad (\text{need }s_1,s_0)\\<br>\frac{\partial s_t}{\partial W} &amp;= \frac{\partial s_t}{\partial h_t}\cdot \left(\frac{\partial h_t}{\partial W} + W\cdot \frac{\partial s_{t-1}}{\partial W}\right)\quad (\text{need }s_t,s_{t-1}; t = 2,3,\ldots,T)\\<br>\frac{\partial E_t}{\partial W} &amp;= \frac{\partial E_t}{\partial \hat{y}_t}\cdot \frac{\partial \hat{y}_t}{\partial z_t} \cdot \frac{\partial z_t}{\partial s_t}\cdot \frac{\partial s_t}{\partial W}\\<br>&amp;=\left(\frac{\partial E_t}{\partial \hat{y}_t}\cdot\frac{\partial \hat{y}_t}{\partial z_t}\right)^T\cdot V \cdot \frac{\partial s_t}{\partial W}\quad (\text{need }\hat{y}_t; t = 1,2,\ldots,T)<br>\end{aligned}<br>$$</p>
+<h3 id="4-RNN-Extensions"><a href="#4-RNN-Extensions" class="headerlink" title="4. RNN Extensions"></a>4. RNN Extensions</h3><p><strong>Bidirectional RNNs</strong>:</p>
+<p></p><p style="text-align:center"><img src="/img/bidirectional-rnn.png" height="360" width="550"><i>Source: Recurrent Neural Networks Tutorial, Part 1 – Introduction to RNNs[1]</i></p>
+<p><strong>Deep (Bidirectional) RNNs</strong>:</p>
+<p></p><p style="text-align:center"><img src="/img/deep-rnn.png" height="606" width="550"><i>Source: Recurrent Neural Networks Tutorial, Part 1 – Introduction to RNNs[1]</i></p>
+<h3 id="5-Vanishing-Gradient-in-RNN-2"><a href="#5-Vanishing-Gradient-in-RNN-2" class="headerlink" title="5. Vanishing Gradient in RNN [2]"></a>5. Vanishing Gradient in RNN [2]</h3><p></p><p style="text-align:center"><img src="/img/rnn2.png" width="65%"></p>
+<p><br><br><strong>hidden state</strong>:</p>
+<p>$$<br>\mathbf{x}_t = \mathbf{W}_{rec}\sigma(\mathbf{x_{t-1}}) + \mathbf{W}_{in}\mathbf{u}_t + \mathbf{b}<br>$$</p>
+<p><strong>cost</strong>:</p>
+<p>$$<br>\mathcal{E} = \sum_{1 \le t \le T} \mathcal{E}_t = \sum_{1 \le t \le T}\mathcal{L}(\mathbf{x}_t)<br>$$</p>
+<p><strong>unrolling RNN</strong>:</p>
+<p></p><p style="text-align:center"><img src="/img/unrollrnn.png" width="90%"></p>
+<p><strong>gradients</strong>:</p>
+<p>$$<br>\frac{\partial \mathcal{E}}{\partial \theta} = \sum_{1 \le t \le T}\frac{\partial \mathcal{E}_t}{\partial \theta}<br>$$<br>$$<br>\frac{\partial \mathcal{E}_t}{\partial \theta} = \sum_{1 \le k \le t} \left( \frac{\partial \mathcal{E}_t}{\partial \mathbf{x}_t} \frac{\partial \mathbf{x}_t}{\partial \mathbf{x}_k} \frac{\partial^{+} \mathbf{x}_k}{\partial \theta} \right)<br>$$<br>$$<br>\frac{\partial \mathbf{x}_t}{\partial \mathbf{x}_k} = \prod_{t \ge i &gt; k}\frac{\partial \mathbf{x}_i}{\partial \mathbf{x}_{i - 1}} = \prod_{t \ge i &gt; k} \mathbf{W}_{rec}^{T}\text{diag}(\sigma^{‘}(\mathbf{x}_{i - 1}))<br>$$</p>
+<p><strong>proof</strong>:</p>
+<p>it is sufficient for $\lambda_1 &lt; \frac{1}{\gamma}$, where $\lambda_1$ is the largest singular value of $\mathbf{W}_{rec}$ and $\left|\left|\text{diag}(\sigma^{‘}(\mathbf{x}_{k}))\right|\right| \le \gamma \in \mathcal{R}$, for the vanishing gradient problem to occur.</p>
+<p>$$<br>\forall k, \left|\left|\frac{\partial \mathbf{x}_{k + 1}}{\partial \mathbf{x}_{k}}\right|\right| \le \left|\left|\mathbf{W}_{rec}^{T}\right|\right|\left|\left|\text{diag}(\sigma^{‘}(\mathbf{x}_{k}))\right|\right| &lt; \frac{1}{\gamma}\gamma &lt; 1<br>$$</p>
+<p>let $\eta \in \mathcal{R}$ be such that $\forall k, \left|\left|\frac{\partial \mathbf{x}_{k + 1}}{\partial \mathbf{x}_{k}}\right|\right| \le \eta &lt; 1$.</p>
+<p>$$<br>\left|\left|\frac{\partial \mathcal{E}_t}{\partial \mathbf{x}_t}\left(\prod_{i=k}^{t-1}\frac{\partial \mathbf{x}_{i + 1}}{\partial \mathbf{x}_{i}}\right)\right|\right| \le \eta^{t-k}\left|\left|\frac{\partial \mathcal{E}_t}{\partial \mathbf{x}_t}\right|\right|<br>$$</p>
+<p><strong>deal with the exploding and vanishing gradient</strong>:</p>
+<ul>
+<li>$L1$ or $L2$ penalty</li>
+<li>LSTM</li>
+<li>clipping gradient</li>
+</ul>
+<p><strong>gradient flow in LSTM</strong>:</p>
+<p>$$<br>\frac{\partial \mathbf{c}_t}{\partial \mathbf{c}_k} = \frac{\partial \mathbf{c}_t}{\partial \mathbf{c}_{t-1}}\cdots\frac{\partial \mathbf{c}_{k+1}}{\partial \mathbf{c}_k} = \text{diag}(\mathbf{f}_t)\cdots\text{diag}(\mathbf{f}_k)=\text{diag}(\mathbf{f}_t\odot\cdots\odot\mathbf{f}_k)<br>$$</p>
+<h3 id="6-Applications"><a href="#6-Applications" class="headerlink" title="6. Applications"></a>6. Applications</h3><p><strong>Language Model</strong> [3, 4, 5]:</p>
+<p></p><p style="text-align:center"><img src="/img/rnnlm.png" width="80%"></p>
+<p></p><p style="text-align:center"><i>Recurrent neural network based language model</i></p>
+<p><strong>Machine Translation</strong> [6]:</p>
+<p></p><p style="text-align:center"><img src="/img/rnn-mt.png" width="80%"></p>
+<p></p><p style="text-align:center"><i>RNN for Machine Translation</i></p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ol>
+<li><strong>Recurrent Neural Networks Tutorial, Part 1 – Introduction to RNNs</strong>:<br><a href="http://www.wildml.com/2015/09/recurrent-neural-networks-tutorial-part-1-introduction-to-rnns/" target="_blank" rel="external">http://www.wildml.com/2015/09/recurrent-neural-networks-tutorial-part-1-introduction-to-rnns/</a></li>
+<li><strong>Pascanu, Razvan, Tomas Mikolov, and Yoshua Bengio. “On the difficulty of training recurrent neural networks.” Proceedings of The 30th International Conference on Machine Learning. 2013.</strong> <a href="http://www.jmlr.org/proceedings/papers/v28/pascanu13.pdf" target="_blank" rel="external">http://www.jmlr.org/proceedings/papers/v28/pascanu13.pdf</a></li>
+<li><strong>Mikolov, Tomas, et al. “Recurrent neural network based language model.” INTERSPEECH. Vol. 2. 2010.</strong> <a href="http://www.fit.vutbr.cz/research/groups/speech/servite/2010/rnnlm_mikolov.pdf" target="_blank" rel="external">http://www.fit.vutbr.cz/research/groups/speech/servite/2010/rnnlm_mikolov.pdf</a></li>
+<li><strong>Recurrent Neural Network Language Models</strong>: <a href="http://www.rnnlm.org/" target="_blank" rel="external">http://www.rnnlm.org/</a></li>
+<li><strong>Andrej Karpathy. The Unreasonable Effectiveness of Recurrent Neural Networks</strong>: <a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/" target="_blank" rel="external">http://karpathy.github.io/2015/05/21/rnn-effectiveness/</a></li>
+<li><strong>Sutskever, Ilya, Oriol Vinyals, and Quoc V. Le. “Sequence to sequence learning with neural networks.” Advances in neural information processing systems. 2014.</strong> <a href="http://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf" target="_blank" rel="external">http://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf</a></li>
+<li><strong>A. Graves. Supervised Sequence Labelling with Recurrent Neural Networks. Textbook, Studies in Computational Intelligence, Springer, 2012.</strong> <a href="https://www.cs.toronto.edu/~graves/preprint.pdf" target="_blank" rel="external">https://www.cs.toronto.edu/~graves/preprint.pdf</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag">#Machine Learning</a>
+          
+            <a href="/tags/RNN/" rel="tag">#RNN</a>
+          
+            <a href="/tags/Neural-Networks/" rel="tag">#Neural Networks</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/01/Machine-Learning-8-Neural-Networks/" rel="next" title="Machine Learning 笔记(8) -- Neural Networks">
+                <i class="fa fa-chevron-left"></i> Machine Learning 笔记(8) -- Neural Networks
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/11/Numerical-Linear-Algebra-1-SVD/" rel="prev" title="Numerical Linear Algebra 笔记(1) -- Singular Value Decomposition">
+                Numerical Linear Algebra 笔记(1) -- Singular Value Decomposition <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/02/21/Machine-Learning-9-Recurrent-Neural-Network/"
+     data-title="Machine Learning 笔记(9) -- Recurrent Neural Network"
+     data-content=""
+     data-url="http://egrcc.github.io/2016/02/21/Machine-Learning-9-Recurrent-Neural-Network/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/02/21/Machine-Learning-9-Recurrent-Neural-Network/"
+           data-title="Machine Learning 笔记(9) -- Recurrent Neural Network" data-url="http://egrcc.github.io/2016/02/21/Machine-Learning-9-Recurrent-Neural-Network/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/640px-Tux.png"
+               alt="egrcc" />
+          <p class="site-author-name" itemprop="name">egrcc</p>
+          <p class="site-description motion-element" itemprop="description">Wir müssen wissen. Wir werden wissen.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/egrcc" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/egrcc" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2948739432" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/egrcc" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:zhaolujun1994@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Recurrent-Neural-Network"><span class="nav-number">1.</span> <span class="nav-text">Recurrent Neural Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Basics"><span class="nav-number">1.1.</span> <span class="nav-text">1. Basics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Model"><span class="nav-number">1.2.</span> <span class="nav-text">2. Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Backpropagation-Through-Time"><span class="nav-number">1.3.</span> <span class="nav-text">3. Backpropagation Through Time</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-RNN-Extensions"><span class="nav-number">1.4.</span> <span class="nav-text">4. RNN Extensions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Vanishing-Gradient-in-RNN-2"><span class="nav-number">1.5.</span> <span class="nav-text">5. Vanishing Gradient in RNN [2]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Applications"><span class="nav-number">1.6.</span> <span class="nav-text">6. Applications</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reference"><span class="nav-number">1.7.</span> <span class="nav-text">Reference</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">egrcc</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"egrccgithub"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("knWm6cIrhwmokVDtepyBF404-gzGzoHsz", "47Ilfyfw9A4dYkw1aVUzOabv");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

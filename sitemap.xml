@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://egrcc.github.io/2016/02/01/Machine-Learning-8-Neural-Networks/</loc>
+    
+    <lastmod>2016-04-24T13:07:40.203Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2016/02/21/Machine-Learning-9-Recurrent-Neural-Network/</loc>
+    
+    <lastmod>2016-04-24T13:05:01.882Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/resources/index.html</loc>
+    
+    <lastmod>2016-03-27T03:20:37.393Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2016/03/16/Machine-Learning-10-LSTM-Networks/</loc>
+    
+    <lastmod>2016-03-26T18:18:55.874Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2016/03/15/Convex-Optimization-1-Lagrange-Duality/</loc>
+    
+    <lastmod>2016-03-26T14:01:16.160Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2016/03/11/Numerical-Linear-Algebra-1-SVD/</loc>
+    
+    <lastmod>2016-03-26T13:57:03.647Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2016/03/12/Numerical-Linear-Algebra-2-Norms/</loc>
+    
+    <lastmod>2016-03-26T13:57:02.027Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2016/03/13/Numerical-Linear-Algebra-3-Projectors/</loc>
+    
+    <lastmod>2016-03-26T13:57:00.719Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2015/07/18/Machine-Learning-1-Linear-Regression/</loc>
+    
+    <lastmod>2016-03-26T13:27:06.707Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/resources/notes/index.html</loc>
+    
+    <lastmod>2016-03-26T13:10:40.291Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/resources/math/index.html</loc>
+    
+    <lastmod>2016-03-25T11:49:02.577Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/resources/machine-learning/index.html</loc>
+    
+    <lastmod>2016-03-23T17:34:21.013Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2015/11/11/Natural-Language-Processing-1-Word-Embedding/</loc>
+    
+    <lastmod>2016-03-19T18:27:39.393Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2015/08/11/Recommender-Systems-1/</loc>
+    
+    <lastmod>2016-03-19T18:14:15.448Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2015/07/18/Machine-Learning-2-Logistic-Regression/</loc>
+    
+    <lastmod>2016-03-19T13:58:51.979Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2014/05/14/Primality-Test/</loc>
+    
+    <lastmod>2016-03-07T17:09:01.182Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2015/07/21/Machine-Learning-7-Naive-Bayes/</loc>
+    
+    <lastmod>2016-03-06T10:29:26.352Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2015/07/19/Machine-Learning-4-K-Means/</loc>
+    
+    <lastmod>2016-02-23T17:26:15.053Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/categories/index.html</loc>
+    
+    <lastmod>2016-02-23T15:07:24.281Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/tags/index.html</loc>
+    
+    <lastmod>2016-02-23T15:04:14.193Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2015/07/20/Machine-Learning-6-Decision-Tree/</loc>
+    
+    <lastmod>2015-07-23T08:20:04.587Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2015/07/19/Machine-Learning-5-KNN/</loc>
+    
+    <lastmod>2015-07-23T08:19:56.227Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2015/07/19/Machine-Learning-3-PCA/</loc>
+    
+    <lastmod>2015-07-23T08:19:20.871Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2015/04/12/mango-tutorial/</loc>
+    
+    <lastmod>2015-04-12T13:18:44.111Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2014/02/07/some-tales-of-mathematicians/</loc>
+    
+    <lastmod>2015-01-27T19:33:42.669Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/2014/05/31/linux-software/</loc>
+    
+    <lastmod>2015-01-27T19:29:21.173Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://egrcc.github.io/about/index.html</loc>
+    
+    <lastmod>2015-01-27T11:22:50.590Z</lastmod>
+    
+  </url>
+  
+</urlset>
